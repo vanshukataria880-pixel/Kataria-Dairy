@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
+
 app = Flask(__name__)
 app.secret_key = "kataria_dairy_secret_2026"
 
@@ -56,7 +57,7 @@ def submit():
     conn.commit()
     conn.close()
 
-    return "Order Saved Successfully ✅"
+    return render_template("success.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -76,7 +77,6 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/admin")
 @app.route("/admin")
 def admin():
 
