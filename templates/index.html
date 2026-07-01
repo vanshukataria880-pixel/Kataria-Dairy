@@ -3,256 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kataria Dairy</title>
+    <title>Kataria Dairy — Fresh Milk, Delivered Daily</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        :root{
+            --cream:#FBF6EC;
+            --cream-deep:#F3ECDB;
+            --midnight:#0A1758;
+            --midnight-2:#141E6B;
+            --sky:#00B4D8;
+            --amber:#F5A300;
+            --amber-deep:#D98600;
+            --ink:#1B1B2F;
+            --ink-soft:#5B5B72;
+            --line:#E4DCC8;
+
+            --font-display: 'Fraunces', serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        *{ box-sizing:border-box; }
+
+        html{ scroll-behavior:smooth; }
+
+        body{
+            font-family:var(--font-body);
+            color:var(--ink);
+            background:var(--cream);
+            overflow-x:hidden;
+        }
+
+        h1,h2,h3,h4,h5{
+            font-family:var(--font-display);
+            letter-spacing:-0.01em;
+        }
+
+        @media (prefers-reduced-motion: reduce){
+            *{ animation:none !important; transition:none !important; }
+        }
+
+        /* ---------- Nav ---------- */
+        nav.navbar{
+            background:rgba(10,23,88,0.92) !important;
+            backdrop-filter:blur(10px);
+            padding-top:.9rem;
+            padding-bottom:.9rem;
+            transition:padding .3s ease, box-shadow .3s ease;
+            box-shadow:0 2px 24px rgba(10,23,88,0.08);
+        }
+        nav.navbar.scrolled{
+            padding-top:.45rem;
+            padding-bottom:.45rem;
+            box-shadow:0 6px 24px rgba(10,23,88,0.18);
+        }
+        .navbar-brand{
+            font-family:var(--font-display);
+            font-weight:600;
+            letter-spacing:0;
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn-milk{
+            position:relative;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:.5rem;
+            font-family:var(--font-body);
+            font-weight:700;
+            font-size:1rem;
+            padding:.85rem 2.1rem;
+            border-radius:999px;
+            border:none;
+            color:var(--midnight);
+            background:linear-gradient(135deg,#FFFFFF,#FBF6EC);
+            box-shadow:0 8px 20px rgba(10,23,88,0.16), inset 0 0 0 1px rgba(10,23,88,0.06);
+            overflow:hidden;
+            isolation:isolate;
+            transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+            text-decoration:none;
+        }
+        .btn-milk::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            z-index:-1;
+            background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.9) 50%, transparent 70%);
+            transform:translateX(-120%);
+            transition:transform .7s ease;
+        }
+        .btn-milk:hover{
+            transform:translateY(-3px);
+            box-shadow:0 14px 28px rgba(10,23,88,0.24), inset 0 0 0 1px rgba(10,23,88,0.06);
+            color:var(--midnight);
+        }
+        .btn-milk:hover::before{ transform:translateX(120%); }
+        .btn-milk:active{ transform:translateY(-1px) scale(.98); }
+
+        .btn-amber{
+            color:#fff;
+            background:linear-gradient(135deg,var(--amber),var(--amber-deep));
+            box-shadow:0 10px 24px rgba(217,134,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.15);
+        }
+        .btn-amber:hover{
+            color:#fff;
+            box-shadow:0 16px 32px rgba(217,134,0,0.45);
+        }
+
+        .btn-outline-milk{
+            background:transparent;
+            color:#fff;
+            box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.55);
+        }
+        .btn-outline-milk:hover{
+            color:var(--midnight);
+            background:#fff;
+        }
+
+        .btn-order-card{
+            width:100%;
+            padding:.7rem 1rem;
+            font-size:.92rem;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero{
+            position:relative;
+            padding:7rem 0 6rem;
+            background:
+                radial-gradient(1100px 500px at 85% -10%, rgba(0,180,216,0.35), transparent 60%),
+                linear-gradient(160deg,#050B36 0%, var(--midnight) 45%, var(--midnight-2) 100%);
+            color:#fff;
+            overflow:hidden;
+        }
+        .hero .eyebrow{
+            font-family:var(--font-mono);
+            font-size:.78rem;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            color:var(--sky);
+            display:inline-flex;
+            align-items:center;
+            gap:.5rem;
+        }
+        .hero .eyebrow::before{
+            content:"";
+            width:22px;height:1px;
+            background:var(--sky);
+        }
+        .hero h1{
+            font-size:clamp(2.5rem, 5vw, 4rem);
+            font-weight:600;
+            line-height:1.06;
+        }
+        .hero h1 em{
+            font-style:italic;
+            color:var(--sky);
+        }
+        .hero p.lead{
+            color:rgba(255,255,255,0.78);
+            font-family:var(--font-body);
+            font-size:1.15rem;
+            max-width:520px;
+        }
+        .hero-stats{
+            display:flex;
+            gap:2.2rem;
+            margin-top:2.5rem;
+        }
+        .hero-stats .stat-num{
+            font-family:var(--font-mono);
+            font-size:1.6rem;
+            font-weight:700;
+            color:#fff;
+        }
+        .hero-stats .stat-label{
+            font-size:.78rem;
+            color:rgba(255,255,255,0.6);
+            text-transform:uppercase;
+            letter-spacing:.06em;
+        }
+
+        /* Reveal on load */
+        .reveal-up{
+            opacity:0;
+            transform:translateY(26px);
+            transition:opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1);
+        }
+        .reveal-up.loaded{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+        /* Milk droplet + ripple signature */
+        .droplet-wrap{
+            position:relative;
+            height:420px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .ripple-ring{
+            position:absolute;
+            border-radius:50%;
+            border:1.5px solid rgba(0,180,216,0.45);
+            left:50%; top:78%;
+            transform:translate(-50%,-50%);
+        }
+        .ripple-ring.r1{ width:60px; height:16px; animation:ripple 3.2s ease-out infinite; }
+        .ripple-ring.r2{ width:60px; height:16px; animation:ripple 3.2s ease-out infinite 1.05s; }
+        .ripple-ring.r3{ width:60px; height:16px; animation:ripple 3.2s ease-out infinite 2.1s; }
+        @keyframes ripple{
+            0%{ width:40px; height:12px; opacity:.9; }
+            100%{ width:340px; height:90px; opacity:0; }
+        }
+        .drop{
+            position:absolute;
+            left:50%;
+            top:8%;
+            width:26px; height:34px;
+            background:linear-gradient(160deg,#fff,#cfeffd);
+            border-radius:50% 50% 50% 0;
+            transform:translateX(-50%) rotate(45deg);
+            box-shadow:0 0 30px rgba(255,255,255,0.35);
+            animation:fall 3.2s cubic-bezier(.5,0,.7,1) infinite;
+        }
+        @keyframes fall{
+            0%{ top:8%; opacity:1; }
+            32%{ top:74%; opacity:1; }
+            33%{ opacity:0; }
+            100%{ top:74%; opacity:0; }
+        }
+        .glass{
+            position:absolute;
+            bottom:6%;
+            width:150px;
+            height:190px;
+            border-radius:0 0 14px 14px;
+            border:2px solid rgba(255,255,255,0.28);
+            border-top:none;
+            background:linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.02) 34%, rgba(255,255,255,0.92) 36%, #fff 100%);
+            overflow:hidden;
+        }
+        .glass::after{
+            content:"";
+            position:absolute;
+            left:8%; right:8%; top:37%;
+            height:4px;
+            background:rgba(255,255,255,0.9);
+            filter:blur(1px);
+        }
+
+        /* ---------- Section headings ---------- */
+        .section-eyebrow{
+            font-family:var(--font-mono);
+            font-size:.75rem;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            color:var(--amber-deep);
+            display:block;
+            text-align:center;
+            margin-bottom:.6rem;
+        }
+        .section-title{
+            text-align:center;
+            font-weight:600;
+            color:var(--midnight);
+            margin-bottom:.5rem;
+        }
+        .section-sub{
+            text-align:center;
+            color:var(--ink-soft);
+            max-width:520px;
+            margin:0 auto 3rem;
+        }
+
+        /* wavy divider between hero and content, like a milk surface */
+        .milk-divider{
+            display:block;
+            width:100%;
+            line-height:0;
+            margin-top:-2px;
+        }
+
+        /* ---------- Fade-in-on-scroll ---------- */
+        .fade-in-scroll{
+            opacity:0;
+            transform:translateY(34px);
+            transition:opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1);
+        }
+        .fade-in-scroll.in-view{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+        /* ---------- Feature cards ---------- */
+        .feature-card{
+            border:1px solid var(--line);
+            border-radius:18px;
+            background:#fff;
+            transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+        }
+        .feature-card:hover{
+            transform:translateY(-8px);
+            box-shadow:0 20px 40px rgba(10,23,88,0.1);
+            border-color:transparent;
+        }
+        .feature-icon{
+            width:54px; height:54px;
+            border-radius:14px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1.5rem;
+            background:linear-gradient(135deg,var(--sky),var(--midnight-2));
+            margin:0 auto 1.1rem;
+            transition:transform .4s ease;
+        }
+        .feature-card:hover .feature-icon{ transform:rotate(-6deg) scale(1.08); }
+
+        /* ---------- Product cards ---------- */
+        .product-card{
+            border:1px solid var(--line);
+            border-radius:20px;
+            background:#fff;
+            overflow:hidden;
+            transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+        }
+        .product-card:hover{
+            transform:translateY(-10px);
+            box-shadow:0 26px 44px rgba(10,23,88,0.14);
+        }
+        .product-media{
+            position:relative;
+            overflow:hidden;
+            aspect-ratio:4/3;
+            background:var(--cream-deep);
+        }
+        .product-media img{
+            width:100%; height:100%;
+            object-fit:cover;
+            transition:transform .6s cubic-bezier(.2,.8,.2,1);
+        }
+        .product-card:hover .product-media img{ transform:scale(1.08); }
+        .product-body{ padding:1.4rem 1.3rem 1.6rem; text-align:center; }
+        .product-name{
+            font-weight:600;
+            font-size:1.02rem;
+            color:var(--ink);
+            margin-bottom:.35rem;
+        }
+        .product-price{
+            font-family:var(--font-mono);
+            font-weight:700;
+            font-size:1.35rem;
+            color:var(--midnight);
+            margin-bottom:1.1rem;
+        }
+        .product-price span{
+            font-size:.75rem;
+            font-weight:500;
+            color:var(--ink-soft);
+        }
+
+        /* ---------- Contact ---------- */
+        .contact-card{
+            border-radius:20px;
+            background:linear-gradient(165deg, var(--midnight), var(--midnight-2));
+            color:#fff;
+            padding:2.6rem 2.4rem;
+        }
+        .contact-card h4{
+            font-family:var(--font-body);
+            font-weight:700;
+            font-size:.85rem;
+            text-transform:uppercase;
+            letter-spacing:.08em;
+            color:var(--sky);
+            margin-top:1.4rem;
+            margin-bottom:.3rem;
+        }
+        .contact-card h4:first-child{ margin-top:0; }
+        .contact-card p{ color:rgba(255,255,255,0.85); margin-bottom:0; }
+        .map-frame{
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:0 20px 40px rgba(10,23,88,0.12);
+        }
+
+        /* ---------- Footer ---------- */
+        footer.site-footer{
+            background:linear-gradient(165deg,#050B36,var(--midnight));
+            color:#fff;
+        }
+        footer.site-footer h5{
+            font-family:var(--font-display);
+            font-weight:600;
+        }
+        footer.site-footer small{ color:rgba(255,255,255,0.55); }
+
+        /* ---------- WhatsApp button ---------- */
+        .whatsapp{
+            position:fixed;
+            bottom:26px; right:26px;
+            width:60px; height:60px;
+            border-radius:50%;
+            background:#25D366;
+            color:#fff;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1.6rem;
+            text-decoration:none;
+            box-shadow:0 10px 24px rgba(37,211,102,0.45);
+            z-index:1000;
+            animation:pulseWA 2.6s ease-in-out infinite;
+        }
+        .whatsapp:hover{ color:#fff; transform:scale(1.06); }
+        @keyframes pulseWA{
+            0%,100%{ box-shadow:0 10px 24px rgba(37,211,102,0.45); }
+            50%{ box-shadow:0 10px 24px rgba(37,211,102,0.45), 0 0 0 12px rgba(37,211,102,0.12); }
+        }
+    </style>
 </head>
 
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark" style="background:linear-gradient(135deg,#020024,#090979,#00b4d8);">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand fw-bold fs-4" href="/">🥛 Kataria Dairy</a>
-
         <div class="ms-auto">
-            <a href="/order" class="btn btn-light fw-bold rounded-pill px-4">Order Now</a>
+            <a href="/order" class="btn-milk btn-amber">Order Now</a>
         </div>
     </div>
 </nav>
 
 <!-- Hero -->
-<section class="hero text-center text-white">
-
+<section class="hero">
     <div class="container">
-
-        <h1 class="display-3 fw-bold">
-            Fresh Milk Delivered Daily
-        </h1>
-
-        <p class="lead mt-3">
-            Pure • Fresh • Healthy
-        </p>
-
-        <a href="/order" class="btn btn-light btn-lg mt-3 rounded-pill px-5 fw-bold">
-            Order Milk
-        </a>
-
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="eyebrow reveal-up" style="transition-delay:.05s">Direct From The Farm</span>
+                <h1 class="mt-3 reveal-up" style="transition-delay:.15s">Fresh Milk,<br><em>Delivered</em> Daily.</h1>
+                <p class="lead mt-3 reveal-up" style="transition-delay:.25s">
+                    Pure, unadulterated milk and dairy — collected every morning and evening, straight to your doorstep.
+                </p>
+                <div class="d-flex gap-3 mt-4 reveal-up" style="transition-delay:.35s">
+                    <a href="/order" class="btn-milk btn-amber">Order Milk</a>
+                    <a href="#products" class="btn-milk btn-outline-milk">See Products</a>
+                </div>
+                <div class="hero-stats reveal-up" style="transition-delay:.45s">
+                    <div>
+                        <div class="stat-num">100%</div>
+                        <div class="stat-label">Pure &amp; Unadulterated</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">2x</div>
+                        <div class="stat-label">Daily Delivery</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">7AM</div>
+                        <div class="stat-label">At Your Door</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="droplet-wrap reveal-up" style="transition-delay:.3s">
+                    <div class="ripple-ring r1"></div>
+                    <div class="ripple-ring r2"></div>
+                    <div class="ripple-ring r3"></div>
+                    <div class="glass"></div>
+                    <div class="drop"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <svg class="milk-divider" viewBox="0 0 1440 90" preserveAspectRatio="none" style="position:absolute;bottom:-1px;left:0;">
+        <path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,45 L1440,90 L0,90 Z" fill="#FBF6EC"></path>
+    </svg>
 </section>
 
 <!-- About -->
-<section class="container py-5">
-
-    <h2 class="text-center mb-5 fw-bold" style="color:#090979;">
-        Why Choose Kataria Dairy?
-    </h2>
+<section class="container py-5 mt-4">
+    <span class="section-eyebrow fade-in-scroll">Why Kataria</span>
+    <h2 class="section-title fade-in-scroll">Why Choose Kataria Dairy?</h2>
+    <p class="section-sub fade-in-scroll">Three simple promises we keep, every single day.</p>
 
     <div class="row text-center g-4">
-
-        <div class="col-md-4">
-            <div class="card h-100 p-4">
-                <h4>🥛 Pure Milk</h4>
-                <p class="mb-0">No Adulteration</p>
+        <div class="col-md-4 fade-in-scroll">
+            <div class="feature-card h-100 p-4 py-5">
+                <div class="feature-icon">🥛</div>
+                <h4>Pure Milk</h4>
+                <p class="mb-0 text-muted">No Adulteration</p>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 p-4">
-                <h4>🚚 Fast Delivery</h4>
-                <p class="mb-0">Morning & Evening</p>
+        <div class="col-md-4 fade-in-scroll" style="transition-delay:.1s">
+            <div class="feature-card h-100 p-4 py-5">
+                <div class="feature-icon">🚚</div>
+                <h4>Fast Delivery</h4>
+                <p class="mb-0 text-muted">Morning &amp; Evening</p>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 p-4">
-                <h4>⭐ Trusted Quality</h4>
-                <p class="mb-0">Serving Families Daily</p>
+        <div class="col-md-4 fade-in-scroll" style="transition-delay:.2s">
+            <div class="feature-card h-100 p-4 py-5">
+                <div class="feature-icon">⭐</div>
+                <h4>Trusted Quality</h4>
+                <p class="mb-0 text-muted">Serving Families Daily</p>
             </div>
         </div>
-
     </div>
-
 </section>
+
 <!-- Products Section -->
-
-<section class="container py-5">
-
-    <h2 class="text-center mb-5 fw-bold" style="color:#090979;">
-        Our Products
-    </h2>
+<section class="container py-5" id="products">
+    <span class="section-eyebrow fade-in-scroll">The Menu</span>
+    <h2 class="section-title fade-in-scroll">Our Products</h2>
+    <p class="section-sub fade-in-scroll">Fresh every morning — order by the litre or by the kilo.</p>
 
     <div class="row g-4">
-
-        <div class="col-md-3 mb-4">
-
-            <div class="card h-100 shadow">
-
-                
-
-                <div class="card-body text-center">
-
-                    <img src="{{ url_for('static', filename='images/cow-milk.jpg') }}" class="card-img-top rounded mb-3" alt="Cow Milk">
-
-                    <p class="fw-semibold">Fresh Cow Milk</p>
-
-                    <h4 style="color:#0072ff;">₹60 / Litre</h4>
-
-                    <a href="/order" class="btn btn-primary w-100 rounded-pill">
-                        Order
-                    </a>
-
+        <div class="col-md-3 mb-4 fade-in-scroll">
+            <div class="product-card h-100">
+                <div class="product-media">
+                    <img src="{{ url_for('static', filename='images/cow-milk.jpg') }}" alt="Cow Milk">
                 </div>
-
+                <div class="product-body">
+                    <p class="product-name">Fresh Cow Milk</p>
+                    <h4 class="product-price">₹60 <span>/ Litre</span></h4>
+                    <a href="/order" class="btn-milk btn-amber btn-order-card">Order</a>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-4">
-
-            <div class="card h-100 shadow">
-
-                
-
-                <div class="card-body text-center">
-
-                    <img src="{{ url_for('static', filename='images/buffalo-milk.jpg') }}" class="card-img-top rounded mb-3" alt="Buffalo Milk">
-                    <p class="fw-semibold">Pure Buffalo Milk</p>
-
-                    <h4 style="color:#0072ff;">₹90 / Litre</h4>
-
-                    <a href="/order" class="btn btn-primary w-100 rounded-pill">
-                        Order
-                    </a>
-
+        <div class="col-md-3 mb-4 fade-in-scroll" style="transition-delay:.08s">
+            <div class="product-card h-100">
+                <div class="product-media">
+                    <img src="{{ url_for('static', filename='images/buffalo-milk.jpg') }}" alt="Buffalo Milk">
                 </div>
-
+                <div class="product-body">
+                    <p class="product-name">Pure Buffalo Milk</p>
+                    <h4 class="product-price">₹90 <span>/ Litre</span></h4>
+                    <a href="/order" class="btn-milk btn-amber btn-order-card">Order</a>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-4">
-
-            <div class="card h-100 shadow">
-
-                
-
-                <div class="card-body text-center">
-
-                    <img src="{{ url_for('static', filename='images/paneer.jpg') }}" class="card-img-top rounded mb-3" alt="Paneer">
-
-                    <p class="fw-semibold">Fresh Homemade Paneer</p>
-
-                    <h4 style="color:#0072ff;">₹400 / Kg</h4>
-
-                    <a href="/order" class="btn btn-primary w-100 rounded-pill">
-                        Order
-                    </a>
-
+        <div class="col-md-3 mb-4 fade-in-scroll" style="transition-delay:.16s">
+            <div class="product-card h-100">
+                <div class="product-media">
+                    <img src="{{ url_for('static', filename='images/paneer.jpg') }}" alt="Paneer">
                 </div>
-
+                <div class="product-body">
+                    <p class="product-name">Fresh Homemade Paneer</p>
+                    <h4 class="product-price">₹400 <span>/ Kg</span></h4>
+                    <a href="/order" class="btn-milk btn-amber btn-order-card">Order</a>
+                </div>
             </div>
-
         </div>
 
-        <div class="col-md-3 mb-4">
-
-            <div class="card h-100 shadow">
-
-                
-                <div class="card-body text-center">
-
-                    <img src="{{ url_for('static', filename='images/ghee.jpg') }}" class="card-img-top rounded mb-3" alt="Desi Ghee">
-
-                    <p class="fw-semibold">Pure Homemade Ghee</p>
-
-                    <h4 style="color:#0072ff;">₹800 / Kg</h4>
-
-                    <a href="/order" class="btn btn-primary w-100 rounded-pill">
-                        Order
-                    </a>
-
+        <div class="col-md-3 mb-4 fade-in-scroll" style="transition-delay:.24s">
+            <div class="product-card h-100">
+                <div class="product-media">
+                    <img src="{{ url_for('static', filename='images/ghee.jpg') }}" alt="Desi Ghee">
                 </div>
-
+                <div class="product-body">
+                    <p class="product-name">Pure Homemade Ghee</p>
+                    <h4 class="product-price">₹800 <span>/ Kg</span></h4>
+                    <a href="/order" class="btn-milk btn-amber btn-order-card">Order</a>
+                </div>
             </div>
-
         </div>
-
     </div>
-
 </section>
+
 <!-- Contact Section -->
-
 <section class="container py-5">
-
-    <h2 class="text-center mb-5 fw-bold" style="color:#090979;">
-        Contact Us
-    </h2>
+    <span class="section-eyebrow fade-in-scroll">Get In Touch</span>
+    <h2 class="section-title fade-in-scroll">Contact Us</h2>
+    <p class="section-sub fade-in-scroll">Questions about delivery or a bulk order? We're happy to help.</p>
 
     <div class="row g-4">
-
-        <div class="col-md-6">
-
-            <div class="card shadow p-4 h-100">
-
+        <div class="col-md-6 fade-in-scroll">
+            <div class="contact-card h-100">
                 <h4>🏠 Address</h4>
-
-                <p>
-                    Kataria Dairy<br>
-                    Your City, Haryana
-                </p>
+                <p>Kataria Dairy<br>Bhawan bahadur nagar, Bulandshahr, (near new park) , Uttar pradesh</p>
 
                 <h4>📞 Phone</h4>
-
-                <p>+91 XXXXXXXXXX</p>
+                <p>+91 8954201806</p>
 
                 <h4>📧 Email</h4>
-
-                <p>katariadairy@gmail.com</p>
-
+                <p>vanshukataria880@gmail.com</p>
             </div>
-
         </div>
 
-        <div class="col-md-6">
-
-            <iframe
-                src="https://www.google.com/maps?q=India&output=embed"
-                width="100%"
-                height="350"
-                style="border:0;border-radius:15px;"
-                allowfullscreen=""
-                loading="lazy">
-            </iframe>
-
+        <div class="col-md-6 fade-in-scroll" style="transition-delay:.1s">
+            <div class="map-frame h-100">
+                <iframe
+                    src="https://www.google.com/maps?q=India&output=embed"
+                    width="100%"
+                    height="100%"
+                    style="border:0; min-height:350px;"
+                    allowfullscreen=""
+                    loading="lazy">
+                </iframe>
+            </div>
         </div>
-
     </div>
-
 </section>
 
 <!-- Footer -->
-
-<footer class="text-white text-center p-4" style="background:linear-gradient(135deg,#020024,#090979);">
-
-    <h5>🥛 Kataria Dairy</h5>
-
-    <p>Fresh Milk Delivered Every Morning</p>
-
+<footer class="site-footer text-center p-5">
+    <h5 class="fs-4">🥛 Kataria Dairy</h5>
+    <p class="mb-1">Fresh Milk Delivered Every Morning</p>
     <small>© 2026 Kataria Dairy. All Rights Reserved.</small>
-
 </footer>
 
 <!-- WhatsApp Button -->
+<a href="https://wa.me/911234567890" class="whatsapp" target="_blank" aria-label="Chat on WhatsApp">💬</a>
 
-<a href="https://wa.me/911234567890"
-   class="whatsapp"
-   target="_blank">
+<script>
+    // Navbar shrink on scroll
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
 
-    💬
+    // Scroll-triggered reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
 
-</a>
+    document.querySelectorAll('.fade-in-scroll').forEach(el => observer.observe(el));
+
+    // Trigger hero reveal
+    window.addEventListener('load', () => {
+        requestAnimationFrame(() => {
+            document.querySelectorAll('.reveal-up').forEach(el => el.classList.add('loaded'));
+        });
+    });
+</script>
+
 </body>
 </html>
